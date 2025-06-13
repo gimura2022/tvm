@@ -37,6 +37,8 @@ void yyerror(char*);
 [a-zA-Z0-9_-]+		{ yylval.str = yytext; return IDENTIFIER; }
 \"(\\.|[^"\\])*\"	{ yylval.str = yytext; return STRING; }
 
+/\**\*/			;
+
 [ \n\t]			;
 .			yyerror("unknown character");
 
