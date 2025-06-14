@@ -1,0 +1,35 @@
+/* Permission to use, copy, modify, and/or distribute this software for
+   any purpose with or without fee is hereby granted.
+
+   THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+   OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+   FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+   DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+   AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+   OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. */
+
+/* hello_tvm.tvma - hello world in tvm assemby */
+/* to compile run "tvm-as hello_tvm.tvma hello_tvm.tmvb" and "tvmi hello_tvm.tvmb" */
+
+/* load extensions */
+@require ext_io;		/* require to load io extension */
+@require ext_runtime_info;	/* require to load runtime info extension */
+
+/* data fields */
+!0:	.ascii "Hello, ";	/* define first part of message */
+!1:	.alloc 128 0;		/* allocate memory for runtime name */
+!2:	.ascii "!";		/* define second part of message */
+
+/* main method */
+!3:	$ext ?0 &ext_io_print;	/* print first part of message */
+	
+	$ext ?1 &ext_runtime_info_name;	/* get runtime name */
+	$ext ?1 &ext_io_print;		/* print runtime name */
+
+	$ext ?2 &ext_io_println;	/* print second part of message */
+
+	$exit;	/* exit from program */
+
+/* after defining main method set it to entry point */
+@start ?3;
