@@ -13,7 +13,10 @@ void yyerror(char*);
 "require"		return KEYWORD_REQUIRE;
 "start"			return KEYWORD_START;
 "ascii"			return KEYWORD_ASCII;
-"byte"			return KEYWORD_BYTE;
+"int8"			return KEYWORD_INT8;
+"int16"			return KEYWORD_INT16;
+"int32"			return KEYWORD_INT32;
+"int64"			return KEYWORD_INT64;
 "alloc"			return KEYWORD_ALLOC;
 
 "ext"			{ yylval.command_type = TVM_EXT; return COMMAND; }

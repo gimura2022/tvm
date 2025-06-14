@@ -32,7 +32,10 @@ extern tvm_memory_address_int_t get_addr_by_label(uint32_t id);
 %token KEYWORD_REQUIRE
 %token KEYWORD_START
 %token KEYWORD_ASCII
-%token KEYWORD_BYTE
+%token KEYWORD_INT8
+%token KEYWORD_INT16
+%token KEYWORD_INT32
+%token KEYWORD_INT64
 %token KEYWORD_ALLOC
 
 %token COMMAND
@@ -94,7 +97,10 @@ command: COMMAND address ext		{ $$.command = $1; $$.address = $2; $$.arg0 = $3; 
 
 data: KEYWORD_ASCII STRING		{ memcpy(mem->get(mem, crnt_addr), $2 + 1, strlen($2) - 2);
     						crnt_addr += strlen($2); }
-    | KEYWORD_BYTE INTEGER		{ *mem->get(mem, crnt_addr) = $2; crnt_addr += 1; }
+    | KEYWORD_INT8 INTEGER		{ *mem->get(mem, crnt_addr) = (uint8_t) $2; crnt_addr += 1; }
+    | KEYWORD_INT16 INTEGER		{ *mem->get(mem, crnt_addr) = (uint16_t) $2; crnt_addr += 2; }
+    | KEYWORD_INT32 INTEGER		{ *mem->get(mem, crnt_addr) = (uint32_t) $2; crnt_addr += 4; }
+    | KEYWORD_INT64 INTEGER		{ *mem->get(mem, crnt_addr) = (uint64_t) $2; crnt_addr += 8; }
     | KEYWORD_ALLOC INTEGER INTEGER	{ memset(mem->get(mem, crnt_addr), $3, $2); crnt_addr += $2; }
     ;
 
