@@ -43,24 +43,15 @@ tvm_memory_address_int_t get_addr_by_label(uint32_t id)
 	errx(EXIT_FAILURE, "undefined label %i", id);
 }
 
-static void compile(const char* input, const char* output)
+static void compile(const char* input)
 {
-	struct tvm_static_memory static_mem;
-	FILE* file;
 	bool is_failure = false;
 
-	tvm_create_static_memory(&static_mem, MEMORY_SIZE, NULL);
-
-	mem = (struct tvm_memory*) &static_mem;
-
-	file = fopen(output, "w");
 	yyin = fopen(input, "r");
 
 	yyparse();
 
 	header.data_size = crnt_addr;	
-
-	tvm_write_bytecode(file, &header, mem);
 
 	goto done;
 
@@ -68,9 +59,6 @@ fail:
 	is_failure = true;
 
 done:
-	tvm_free_static_memory(&static_mem);
-
-	fclose(file);
 	fclose(yyin);
 
 	if (is_failure)
@@ -115,7 +103,26 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	compile(assember_file, bytecode_file);
+	struct tvm_static_memory static_mem;
+	FILE* file;
+	int exit_code = 0;
 
-	return 0;
+	tvm_create_static_memory(&static_mem, MEMORY_SIZE, NULL);
+	mem = (struct tvm_memory*) &static_mem;
+
+	compile(assember_file);
+
+	if ((file = fopen(bytecode_file, "w")) == NULL) {
+		warn("can't open output file");
+		exit_code = 1;
+		goto done;
+	}
+
+	tvm_write_bytecode(file, &header, mem);
+
+done:
+	fclose(file);
+	tvm_free_static_memory(&static_mem);
+
+	return exit_code;
 }
