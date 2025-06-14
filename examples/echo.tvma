@@ -14,20 +14,15 @@
 
 /* load extensions */
 @require ext_io;		/* require to load io extension */
-@require ext_runtime_info;	/* require to load runtime info extension */
 
 /* data fields */
 !0:	.alloc 128 0;		/* allocate memory for echo string */
 
 /* main method */
-!3:	$ext ?0 &ext_io_print;	/* print first part of message */
-	
-	$ext ?1 &ext_runtime_info_name;	/* get runtime name */
-	$ext ?1 &ext_io_print;		/* print runtime name */
+!1:	$ext ?0 &ext_io_getline 128;	/* get user line */
+	$ext ?0 &ext_io_print;		/* print user input */
 
-	$ext ?2 &ext_io_println;	/* print second part of message */
-
-	$exit;	/* exit from program */
+	$goto ?1;			/* make loop */
 
 /* after defining main method set it to entry point */
-@start ?3;
+@start ?1;
