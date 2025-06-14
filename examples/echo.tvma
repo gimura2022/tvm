@@ -9,8 +9,8 @@
    AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
    OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. */
 
-/* hello_tvm.tvma - hello world in tvm assemby */
-/* to compile run "tvm-as hello_tvm.tvma hello_tvm.tmvb" and "tvmi hello_tvm.tvmb" */
+/* echo.tvma - program for duplicate input string */
+/* to compile run "tvm-as echo.tvma echo.tmvb" and "tvmi echo.tvmb" */
 
 /* load extensions */
 @require ext_io;		/* require to load io extension */
