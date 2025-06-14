@@ -17,20 +17,20 @@ extern size_t label_count;
 
 struct label {
 	tvm_memory_address_int_t addr;
-	uint32_t id;
+	char name[64];
 };
 
 extern struct label* labels;
 
-extern tvm_memory_address_int_t get_addr_by_label(uint32_t id);
+extern tvm_memory_address_int_t get_addr_by_label(const char* name);
 %}
 
 %token INTEGER
-%token IDENTIFIER
 %token STRING
 
 %token KEYWORD_REQUIRE
 %token KEYWORD_START
+%token KEYWORD_LABEL
 %token KEYWORD_ASCII
 %token KEYWORD_INT8
 %token KEYWORD_INT16
@@ -57,7 +57,6 @@ extern tvm_memory_address_int_t get_addr_by_label(uint32_t id);
 };
 
 %type <integer> INTEGER
-%type <str> IDENTIFIER
 %type <str> STRING
 
 %type <ext> EXT
@@ -72,11 +71,6 @@ extern tvm_memory_address_int_t get_addr_by_label(uint32_t id);
 %%
 
 program:
-       | program '!' INTEGER ':'	{
-       						labels[label_count].addr = crnt_addr;
-						labels[label_count].id = $3;
-						label_count++;
-       					}
        | program expr ';'
        ;
 
@@ -85,8 +79,13 @@ expr: '@' meta
     | '.' data
     ;
 
-meta: KEYWORD_REQUIRE IDENTIFIER	{ strcpy(header.exts[header.ext_count++], $2); }
+meta: KEYWORD_REQUIRE STRING		{ memcpy(header.exts[header.ext_count++], $2 + 1, strlen($2) - 2); }
     | KEYWORD_START address		{ header.program_start_addr = $2; }
+    | KEYWORD_LABEL STRING 		{
+       						labels[label_count].addr = crnt_addr;
+						strcpy(labels[label_count].name, $2);
+						label_count++;
+       					}
     ;
 
 command: COMMAND address ext		{ $$.command = $1; $$.address = $2; $$.arg0 = $3; }
@@ -105,7 +104,7 @@ data: KEYWORD_ASCII STRING		{ memcpy(mem->get(mem, crnt_addr), $2 + 1, strlen($2
     ;
 
 address: '#' INTEGER	{ $$ = $2; }
-       | '?' INTEGER	{ $$ = get_addr_by_label($2); }
+       | '?' STRING	{ $$ = get_addr_by_label($2); }
        ;
 
 ext: '&' EXT		{ $$ = $2; }

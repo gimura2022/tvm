@@ -23,7 +23,7 @@ size_t label_count                 = 0;
 
 struct label {
 	tvm_memory_address_int_t addr;
-	uint32_t id;
+	char name[64];
 };
 
 static struct label labels_arr[MAX_LABEL_COUNT];
@@ -32,15 +32,15 @@ struct label* labels = labels_arr;
 extern FILE* yyin;
 extern void yyparse(void);
 
-tvm_memory_address_int_t get_addr_by_label(uint32_t id)
+tvm_memory_address_int_t get_addr_by_label(const char* name)
 {
 	int i;
 
 	for (i = 0; i < label_count; i++)
-		if (labels[i].id == id)
+		if (!strcmp(name, labels[i].name))
 			return labels[i].addr;
 
-	errx(EXIT_FAILURE, "undefined label %i", id);
+	errx(EXIT_FAILURE, "undefined label %s", name);
 }
 
 static void compile(const char* input)

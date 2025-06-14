@@ -13,23 +13,23 @@
 /* to compile run "tvm-as hello_tvm.tvma hello_tvm.tmvb" and "tvmi hello_tvm.tvmb" */
 
 /* load extensions */
-@require ext_io;		/* require to load io extension */
-@require ext_runtime_info;	/* require to load runtime info extension */
+@require "ext_io";		/* require to load io extension */
+@require "ext_runtime_info";	/* require to load runtime info extension */
 
 /* data fields */
-!0:	.ascii "Hello, ";	/* define first part of message */
-!1:	.alloc 128 0;		/* allocate memory for runtime name */
-!2:	.ascii "!";		/* define second part of message */
+@label "part0";		.ascii "Hello, ";	/* define first part of message */
+@label "runtime_name";	.alloc 128 0;		/* allocate memory for runtime name */
+@label "part1";		.ascii "!";		/* define second part of message */
 
 /* main method */
-!3:	$ext ?0 &ext_io_print;	/* print first part of message */
+@label "main";	$ext ?"part0" &ext_io_print;	/* print first part of message */
 	
-	$ext ?1 &ext_runtime_info_name;	/* get runtime name */
-	$ext ?1 &ext_io_print;		/* print runtime name */
+		$ext ?"runtime_name" &ext_runtime_info_name;	/* get runtime name */
+		$ext ?"runtime_name" &ext_io_print;		/* print runtime name */
 
-	$ext ?2 &ext_io_println;	/* print second part of message */
+		$ext ?"part1" &ext_io_println;	/* print second part of message */
 
-	$exit;	/* exit from program */
+		$exit;	/* exit from program */
 
 /* after defining main method set it to entry point */
-@start ?3;
+@start ?"main";

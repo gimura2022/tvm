@@ -18,6 +18,7 @@ void yyerror(char*);
 "int32"			return KEYWORD_INT32;
 "int64"			return KEYWORD_INT64;
 "alloc"			return KEYWORD_ALLOC;
+"label"			return KEYWORD_LABEL;
 
 "ext"			{ yylval.command_type = TVM_EXT; return COMMAND; }
 "exit"			{ yylval.command_type = TVM_EXIT; return COMMAND; }
@@ -36,10 +37,9 @@ void yyerror(char*);
 				yylval.integer = atoi(yytext);
 				return INTEGER;
 			}
+\"(\\.|[^"\\])*\"	{ yylval.str = yytext; return STRING; }
 
 [!;:@.$?&#^]		return *yytext;
-[a-zA-Z0-9_-]+		{ yylval.str = yytext; return IDENTIFIER; }
-\"(\\.|[^"\\])*\"	{ yylval.str = yytext; return STRING; }
 
 \/\*(\n|[^*])*\*\/	;
 [ \n\t]			;

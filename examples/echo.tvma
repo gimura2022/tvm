@@ -13,16 +13,16 @@
 /* to compile run "tvm-as echo.tvma echo.tmvb" and "tvmi echo.tvmb" */
 
 /* load extensions */
-@require ext_io;		/* require to load io extension */
+@require "ext_io";		/* require to load io extension */
 
 /* data fields */
-!0:	.alloc 128 0;		/* allocate memory for echo string */
+@label "a";	.alloc 128 0;		/* allocate memory for echo string */
 
 /* main method */
-!1:	$ext ?0 &ext_io_getline 128;	/* get user line */
-	$ext ?0 &ext_io_print;		/* print user input */
+@label "b";	$ext ?"a" &ext_io_getline 128;	/* get user line */
+		$ext ?"a" &ext_io_print;	/* print user input */
 
-	$goto ?1;			/* make loop */
+		$goto ?"b";			/* make loop */
 
 /* after defining main method set it to entry point */
-@start ?1;
+@start ?"b";
