@@ -77,7 +77,7 @@ int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address)
 			break;
 
 		case TVM_GOTO:
-			i = command->address;
+			i = command->address - TVM_COMMAND_SIZE_IN_MEMORY;
 			break;
 
 		case TVM_IF:
