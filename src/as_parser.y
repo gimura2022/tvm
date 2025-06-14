@@ -1,4 +1,5 @@
 %{
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +24,9 @@ struct label {
 extern struct label* labels;
 
 extern tvm_memory_address_int_t get_addr_by_label(const char* name);
+extern void compile(const char* input);
+
+extern FILE* yyin;
 %}
 
 %token INTEGER
@@ -31,6 +35,7 @@ extern tvm_memory_address_int_t get_addr_by_label(const char* name);
 %token KEYWORD_REQUIRE
 %token KEYWORD_START
 %token KEYWORD_LABEL
+%token KEYWORD_IMPORT
 %token KEYWORD_ASCII
 %token KEYWORD_INT8
 %token KEYWORD_INT16
@@ -86,6 +91,11 @@ meta: KEYWORD_REQUIRE STRING		{ memcpy(header.exts[header.ext_count++], $2 + 1, 
 						strcpy(labels[label_count].name, $2);
 						label_count++;
        					}
+    | KEYWORD_IMPORT STRING		{
+    						FILE* old_yyin = yyin;
+						compile($2);
+						yyin = old_yyin;
+    					}
     ;
 
 command: COMMAND address ext		{ $$.command = $1; $$.address = $2; $$.arg0 = $3; }

@@ -19,6 +19,7 @@ void yyerror(char*);
 "int64"			return KEYWORD_INT64;
 "alloc"			return KEYWORD_ALLOC;
 "label"			return KEYWORD_LABEL;
+"import"		return KEYWORD_IMPORT;
 
 "ext"			{ yylval.command_type = TVM_EXT; return COMMAND; }
 "exit"			{ yylval.command_type = TVM_EXIT; return COMMAND; }

@@ -43,7 +43,7 @@ tvm_memory_address_int_t get_addr_by_label(const char* name)
 	errx(EXIT_FAILURE, "undefined label %s", name);
 }
 
-static void compile(const char* input)
+void compile(const char* input)
 {
 	bool is_failure = false;
 
