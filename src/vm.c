@@ -24,6 +24,10 @@ static int io_ext(const struct tvm_command* command, struct tvm_memory* mem)
 		fputc('\n', stdout);
 		break;
 
+	case TVM_EXT_IO_GETLINE:
+		fgets((char*) mem->get(mem, command->address), mem->end(mem) - command->address, stdin);
+		break;
+
 	default:
 		return TVM_INVALID_EXT;
 	}
