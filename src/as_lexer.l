@@ -25,6 +25,7 @@ void yyerror(char*);
 
 "ext_io_print"		{ yylval.ext = TVM_EXT_IO_PRINT; return EXT; }
 "ext_io_println"	{ yylval.ext = TVM_EXT_IO_PRINTLN; return EXT; }
+"ext_io_getline"	{ yylval.ext = TVM_EXT_IO_GETLINE; return EXT; }
 
 "ext_runtime_info_name"	{ yylval.ext = TVM_EXT_RUNTIME_INFO_NAME; return EXT; }
 
