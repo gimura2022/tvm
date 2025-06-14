@@ -86,9 +86,10 @@ meta: KEYWORD_REQUIRE IDENTIFIER	{ strcpy(header.exts[header.ext_count++], $2); 
     | KEYWORD_START address		{ header.program_start_addr = $2; }
     ;
 
-command: COMMAND address ext	{ $$.command = $1; $$.address = $2; $$.arg0 = $3; }
-       | COMMAND address	{ $$.command = $1; $$.address = $2; }
-       | COMMAND		{ $$.command = $1; }
+command: COMMAND address ext		{ $$.command = $1; $$.address = $2; $$.arg0 = $3; }
+       | COMMAND address ext INTEGER	{ $$.command = $1; $$.address = $2; $$.arg0 = $3; $$.arg1 = $4; }
+       | COMMAND address		{ $$.command = $1; $$.address = $2; }
+       | COMMAND			{ $$.command = $1; }
        ;
 
 data: KEYWORD_ASCII STRING		{ memcpy(mem->get(mem, crnt_addr), $2 + 1, strlen($2) - 2);
