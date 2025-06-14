@@ -17,9 +17,7 @@
 @require ext_runtime_info;	/* require to load runtime info extension */
 
 /* data fields */
-!0:	.ascii "Hello, ";	/* define first part of message */
-!1:	.alloc 128 0;		/* allocate memory for runtime name */
-!2:	.ascii "!";		/* define second part of message */
+!0:	.alloc 128 0;		/* allocate memory for echo string */
 
 /* main method */
 !3:	$ext ?0 &ext_io_print;	/* print first part of message */

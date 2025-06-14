@@ -25,7 +25,7 @@ static int io_ext(const struct tvm_command* command, struct tvm_memory* mem)
 		break;
 
 	case TVM_EXT_IO_GETLINE:
-		fgets((char*) mem->get(mem, command->address), command->arg0, stdin);
+		fgets((char*) mem->get(mem, command->address), command->arg1, stdin);
 		break;
 
 	default:
