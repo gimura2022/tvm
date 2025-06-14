@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -7,14 +8,17 @@
 #include "tvm.h"
 
 #define DEFAULT_MEMORY_SIZE 4096
+#define DEFAULT_CALL_STACK_SIZE 4096
 
 static tvm_memory_address_int_t memory_size = DEFAULT_MEMORY_SIZE;
+static size_t call_stack_size               = DEFAULT_CALL_STACK_SIZE;
 
 static void execute_file(const char* bytecode_file)
 {
 	bool is_failure = false;
 	struct tvm_static_memory mem;
 	struct tvm_bytecode_header header;
+	tvm_memory_address_int_t* call_stack = NULL;
 	FILE* file;
 
 	tvm_create_static_memory(&mem, memory_size, NULL);
@@ -50,7 +54,10 @@ static void execute_file(const char* bytecode_file)
 		}
 	}
 
-	switch (tvm_execute((struct tvm_memory*) &mem, header.program_start_addr)) {
+	call_stack = malloc(call_stack_size * sizeof(tvm_memory_address_int_t));
+
+	switch (tvm_execute((struct tvm_memory*) &mem, header.program_start_addr, call_stack,
+				call_stack_size)) {
 	case TVM_OK:
 		goto done;
 
@@ -67,14 +74,16 @@ fail:
 
 done:
 	tvm_free_static_memory(&mem);
+	free(call_stack);
 
 	if (is_failure)
 		exit(EXIT_FAILURE);
 }
 
-#define USAGE_SMALL	"tvmi [-h] [-m] file\n"
+#define USAGE_SMALL	"tvmi [-h] [-m] [-c] file\n"
 #define USAGE		"	-h	print usage\n" \
-			"	-m	set program memory size (default 4096)\n"
+			"	-m	set program memory size (default 4096)\n" \
+			"	-c	set program call stack size (default 4096)\n"
 
 static void usage(FILE* file, bool small)
 {
@@ -90,6 +99,10 @@ int main(int argc, char* argv[])
 	while ((c = getopt(argc, argv, "hm:")) != -1) switch (c) {
 	case 'm':
 		memory_size = atoi(optarg);
+		break;
+
+	case 'c':
+		call_stack_size = atoi(optarg);
 		break;
 
 	case 'h':

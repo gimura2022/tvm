@@ -61,7 +61,8 @@ static int execute_ext(const struct tvm_command* command, struct tvm_memory* mem
 	return TVM_INVALID_EXT;
 }
 
-int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address)
+int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address,
+		tvm_memory_address_int_t* call_stack, size_t call_stack_size)
 {
 	for (tvm_memory_address_int_t i = start_address; i < mem->end(mem);
 			i += TVM_COMMAND_SIZE_IN_MEMORY) {

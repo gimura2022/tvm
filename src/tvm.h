@@ -29,6 +29,7 @@ enum {
 	TVM_IF,
 	TVM_EXT,
 	TVM_EXIT,
+	TVM_RET,
 };
 
 enum {
@@ -94,6 +95,7 @@ void tvm_free_static_memory(struct tvm_static_memory* mem);
 struct tvm_command* tvm_get_command(struct tvm_memory* mem, tvm_memory_address_int_t addr);
 
 int tvm_load_ext(const char* name);
-int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address);
+int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address,
+		tvm_memory_address_int_t* call_stack, size_t call_stack_size);
 
 #endif
