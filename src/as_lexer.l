@@ -34,6 +34,15 @@ void yyerror(char*);
 
 "ext_runtime_info_name"	{ yylval.ext = TVM_EXT_RUNTIME_INFO_NAME; return EXT; }
 
+"ext_extmath_int16_add"	{ yylval.ext = TVM_EXT_EXTMATH_INT16_ADD; return EXT; }
+"ext_extmath_int16_sub"	{ yylval.ext = TVM_EXT_EXTMATH_INT16_SUB; return EXT; }
+
+"ext_extmath_int32_add"	{ yylval.ext = TVM_EXT_EXTMATH_INT32_ADD; return EXT; }
+"ext_extmath_int32_sub"	{ yylval.ext = TVM_EXT_EXTMATH_INT32_SUB; return EXT; }
+
+"ext_extmath_int64_add"	{ yylval.ext = TVM_EXT_EXTMATH_INT64_ADD; return EXT; }
+"ext_extmath_int64_sub"	{ yylval.ext = TVM_EXT_EXTMATH_INT64_SUB; return EXT; }
+
 [0-9]+			{
 				yylval.integer = atoi(yytext);
 				return INTEGER;

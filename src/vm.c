@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
@@ -39,6 +40,40 @@ static int runtime_info_ext(const struct tvm_command* command, struct tvm_memory
 	switch (command->arg0) {
 	case TVM_EXT_RUNTIME_INFO_NAME:
 		strcpy((char*) mem->get(mem, command->address), PACKAGE_STRING);
+		break;
+
+	default:
+		return TVM_INVALID_EXT;
+	}
+
+	return TVM_OK;
+}
+
+static int extmath_ext(const struct tvm_command* command, struct tvm_memory* mem)
+{
+	switch (command->arg0) {
+	case TVM_EXT_EXTMATH_INT16_ADD:
+		*((uint16_t*) mem->get(mem, command->address)) += command->arg1;
+		break;
+
+	case TVM_EXT_EXTMATH_INT16_SUB:
+		*((uint16_t*) mem->get(mem, command->address)) -= command->arg1;
+		break;
+
+	case TVM_EXT_EXTMATH_INT32_ADD:
+		*((uint32_t*) mem->get(mem, command->address)) += command->arg1;
+		break;
+
+	case TVM_EXT_EXTMATH_INT32_SUB:
+		*((uint32_t*) mem->get(mem, command->address)) -= command->arg1;
+		break;
+
+	case TVM_EXT_EXTMATH_INT64_ADD:
+		*((uint64_t*) mem->get(mem, command->address)) += command->arg1;
+		break;
+
+	case TVM_EXT_EXTMATH_INT64_SUB:
+		*((uint64_t*) mem->get(mem, command->address)) -= command->arg1;
 		break;
 
 	default:
@@ -114,6 +149,9 @@ int tvm_load_ext(const char* name)
 		return TVM_BUILTIN;
 	} else if (!strcmp(name, "ext_runtime_info")) {
 		exts[ext_count++] = runtime_info_ext;
+		return TVM_BUILTIN;
+	} else if (!strcmp(name, "ext_extmath")) {
+		exts[ext_count++] = extmath_ext;
 		return TVM_BUILTIN;
 	} else {
 		return TVM_UNSUPPORTED_EXT;
