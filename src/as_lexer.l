@@ -27,7 +27,6 @@ void yyerror(char*);
 "sub"			{ yylval.command_type = TVM_SUB; return COMMAND; }
 "goto"			{ yylval.command_type = TVM_GOTO; return COMMAND; }
 "if"			{ yylval.command_type = TVM_IF; return COMMAND; }
-"ret"			{ yylval.command_type = TVM_RET; return COMMAND; }
 
 "ext_io_print"		{ yylval.ext = TVM_EXT_IO_PRINT; return EXT; }
 "ext_io_println"	{ yylval.ext = TVM_EXT_IO_PRINTLN; return EXT; }

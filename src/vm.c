@@ -61,8 +61,7 @@ static int execute_ext(const struct tvm_command* command, struct tvm_memory* mem
 	return TVM_INVALID_EXT;
 }
 
-int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address,
-		tvm_memory_address_int_t* call_stack, size_t call_stack_size)
+int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address)
 {
 	size_t call_stack_pos = 0;
 
@@ -80,7 +79,6 @@ int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address,
 			break;
 
 		case TVM_GOTO:
-			call_stack[++call_stack_pos] = i;
 			i = command->address - TVM_COMMAND_SIZE_IN_MEMORY;
 			break;
 
@@ -96,10 +94,6 @@ int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address,
 
 		case TVM_EXT:
 			unwrap(execute_ext(command, mem));
-			break;
-
-		case TVM_RET:
-			i = call_stack[call_stack_size--];
 			break;
 
 		default:
