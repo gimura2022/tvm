@@ -7,9 +7,8 @@
 
 #include "config.h"
 
-typedef int (*ext_callback_f)(const struct tvm_command* command, struct tvm_memory* mem);
 
-static ext_callback_f exts[TVM_MAX_EXT_COUNT];
+static tvm_ext_callback_f exts[TVM_MAX_EXT_COUNT];
 static size_t ext_count = 0;
 
 static int io_ext(const struct tvm_command* command, struct tvm_memory* mem)
@@ -107,6 +106,9 @@ exit:
 
 int tvm_load_ext(const char* name)
 {
+	if (ext_count >= TVM_MAX_EXT_COUNT)
+		return TVM_TOO_MANY_EXT;
+
 	if (!strcmp(name, "ext_io")) {
 		exts[ext_count++] = io_ext;
 		return TVM_BUILTIN;
@@ -116,4 +118,14 @@ int tvm_load_ext(const char* name)
 	} else {
 		return TVM_UNSUPPORTED_EXT;
 	}
+}
+
+int tvm_load_custom_ext(tvm_ext_callback_f callback)
+{
+	if (ext_count >= TVM_MAX_EXT_COUNT)
+		return TVM_TOO_MANY_EXT;
+
+	exts[ext_count++] = callback;
+
+	return TVM_OK;
 }

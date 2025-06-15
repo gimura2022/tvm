@@ -82,7 +82,9 @@ enum {
 
 	TVM_UNSUPPORTED_EXT,
 	TVM_UNEXCEPTED_BYTECODE_END,
+	TVM_TOO_MANY_EXT,
 };
+
 
 int tvm_load_bytecode(FILE* file, struct tvm_bytecode_header* header, struct tvm_memory* mem);
 int tvm_write_bytecode(FILE* file, const struct tvm_bytecode_header* header, struct tvm_memory* mem);
@@ -93,7 +95,10 @@ void tvm_free_static_memory(struct tvm_static_memory* mem);
 
 struct tvm_command* tvm_get_command(struct tvm_memory* mem, tvm_memory_address_int_t addr);
 
+typedef int (*tvm_ext_callback_f)(const struct tvm_command* command, struct tvm_memory* mem);
+
 int tvm_load_ext(const char* name);
+int tvm_load_custom_ext(tvm_ext_callback_f callback);
 int tvm_execute(struct tvm_memory* mem, tvm_memory_address_int_t start_address);
 
 #endif
