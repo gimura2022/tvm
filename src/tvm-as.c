@@ -9,7 +9,9 @@
 #include "tvm.h"
 
 #define MAX_LABEL_COUNT 1024
-#define MEMORY_SIZE 4096
+#define DEFAULT_MEMORY_SIZE 4096
+
+static tvm_memory_address_int_t memory_size = DEFAULT_MEMORY_SIZE;
 
 struct tvm_memory* mem;
 struct tvm_bytecode_header header = {
@@ -65,8 +67,9 @@ done:
 		exit(EXIT_FAILURE);
 }
 
-#define USAGE_SMALL	"tvm-as [-h] input output\n"
+#define USAGE_SMALL	"tvm-as [-h] [-m] input output\n"
 #define USAGE		"	-h	print usage\n" \
+			"	-m	set program memory size (default 4096)\n"
 
 static void usage(FILE* file, bool small)
 {
@@ -80,10 +83,14 @@ int main(int argc, char* argv[])
 
 	int c;
 	opterr = 0;
-	while ((c = getopt(argc, argv, "h")) != -1) switch (c) {
+	while ((c = getopt(argc, argv, "hm:")) != -1) switch (c) {
 	case 'h':
 		usage(stdout, false);
 		exit(EXIT_SUCCESS);
+
+	case 'm':
+		memory_size = atoi(optarg);
+		break;
 
 	case '?':
 		warnx("invalid flag %c", optopt);
@@ -107,7 +114,7 @@ int main(int argc, char* argv[])
 	FILE* file;
 	int exit_code = 0;
 
-	tvm_create_static_memory(&static_mem, MEMORY_SIZE, NULL);
+	tvm_create_static_memory(&static_mem, memory_size, NULL);
 	mem = (struct tvm_memory*) &static_mem;
 
 	compile(assember_file);
