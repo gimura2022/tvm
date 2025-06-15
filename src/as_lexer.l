@@ -39,6 +39,7 @@ void yyerror(char*);
 				return INTEGER;
 			}
 \"(\\.|[^"\\])*\"	{ yylval.str = yytext; return STRING; }
+\'.\'			{ yylval.integer = *(yytext + 1); return CHAR; }
 
 [!;:@.$?&#^]		return *yytext;
 

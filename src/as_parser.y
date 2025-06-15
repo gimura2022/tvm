@@ -31,6 +31,7 @@ extern FILE* yyin;
 
 %token INTEGER
 %token STRING
+%token CHAR
 
 %token KEYWORD_REQUIRE
 %token KEYWORD_START
@@ -54,6 +55,7 @@ extern FILE* yyin;
 
 %union {
 	tvm_memory_address_int_t addr;
+	tvm_memory_cell_int_t cell;
 	int integer;
 	struct tvm_command command;
 	uint16_t ext;
@@ -63,6 +65,7 @@ extern FILE* yyin;
 
 %type <integer> INTEGER
 %type <str> STRING
+%type <integer> CHAR
 
 %type <ext> EXT
 %type <command_type> COMMAND
@@ -72,6 +75,8 @@ extern FILE* yyin;
 
 %type <addr> address
 %type <ext> ext
+
+%type <cell> mem_cell
 
 %%
 
@@ -110,7 +115,7 @@ data: KEYWORD_ASCII STRING		{ memcpy(mem->get(mem, crnt_addr), $2 + 1, strlen($2
     | KEYWORD_INT16 INTEGER		{ *mem->get(mem, crnt_addr) = (uint16_t) $2; crnt_addr += 2; }
     | KEYWORD_INT32 INTEGER		{ *mem->get(mem, crnt_addr) = (uint32_t) $2; crnt_addr += 4; }
     | KEYWORD_INT64 INTEGER		{ *mem->get(mem, crnt_addr) = (uint64_t) $2; crnt_addr += 8; }
-    | KEYWORD_ALLOC INTEGER INTEGER	{ memset(mem->get(mem, crnt_addr), $3, $2); crnt_addr += $2; }
+    | KEYWORD_ALLOC INTEGER mem_cell	{ memset(mem->get(mem, crnt_addr), $3, $2); crnt_addr += $2; }
     ;
 
 address: '#' INTEGER	{ $$ = $2; }
@@ -120,6 +125,10 @@ address: '#' INTEGER	{ $$ = $2; }
 ext: '&' EXT		{ $$ = $2; }
    | '^' INTEGER	{ $$ = $2; }
    ;
+
+mem_cell: INTEGER	{ $$ = $1; }
+	| CHAR		{ $$ = $1; }
+	;
 
 %%
 
